@@ -18,7 +18,8 @@ const App = () => {
       id: Date.now().toString(),
       item: newTodo,
     };
-    await fetch("http://localhost:8000/todo", {
+//    await fetch("http://localhost:8000/todo", {
+await fetch("https://backend-production-d9a9.up.railway.app:8000/todo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(todo),
