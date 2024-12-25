@@ -1,18 +1,78 @@
-import React from "react";
-import { render } from 'react-dom';
-import { ChakraProvider } from "@chakra-ui/core";
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 
-import Header from "./Components/Header";
-import Todos from "./Components/Todos";
+const App = () => {
+  const [todos, setTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState("");
 
-function App() {
+  // Fetch all todos from the backend
+  const fetchTodos = async () => {
+    const response = await fetch("http://localhost:8000/todo");
+    const data = await response.json();
+    setTodos(data.data);
+  };
+
+  // Add a new todo
+  const addTodo = async () => {
+    const todo = {
+      id: Date.now().toString(),
+      item: newTodo,
+    };
+    await fetch("http://localhost:8000/todo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    });
+    setNewTodo("");
+    fetchTodos();
+  };
+
+  // Update a todo
+  const updateTodo = async (id, updatedItem) => {
+    await fetch(`http://localhost:8000/todo/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ item: updatedItem }),
+    });
+    fetchTodos();
+  };
+
+  // Delete a todo
+  const deleteTodo = async (id) => {
+    await fetch(`http://localhost:8000/todo/${id}`, {
+      method: "DELETE",
+    });
+    fetchTodos();
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
   return (
-    <ChakraProvider>
-      <Header />
-      <Todos />
-    </ChakraProvider>
-  )
-}
+    <div>
+      <h1>Todo List</h1>
+      <input
+        type="text"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        placeholder="Enter a new todo"
+      />
+      <button onClick={addTodo}>Add Todo</button>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <input
+              type="text"
+              defaultValue={todo.item}
+              onBlur={(e) => updateTodo(todo.id, e.target.value)}
+            />
+            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-const rootElement = document.getElementById("root")
-render(<App />, rootElement)
+ReactDOM.render(<App />, document.getElementById("root"));

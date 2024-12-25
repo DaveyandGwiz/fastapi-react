@@ -1,0 +1,21 @@
+{
+  "services": [
+    {
+      "name": "backend",
+      "build": {
+        "builder": "python",
+        "start": "uvicorn main:app --host 0.0.0.0 --port $PORT"
+      },
+      "path": "backend"
+    },
+    {
+      "name": "frontend",
+      "build": {
+        "builder": "npm",
+        "buildCommand": "npm install && npm run build",
+        "start": "serve -s build -l $PORT"
+      },
+      "path": "frontend"
+    }
+  ]
+}
