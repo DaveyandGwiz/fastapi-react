@@ -16,9 +16,13 @@ todos = [
 
 app = FastAPI()
 
+# origins = [
+#     "http://localhost:3000",
+#     "localhost:3000"
+# ]
 origins = [
-    "http://localhost:3000",
-    "localhost:3000"
+    "http://localhost:3000",  # For local development
+    "https://your-frontend-service.up.railway.app"  # Replace with the Railway frontend URL
 ]
 
 

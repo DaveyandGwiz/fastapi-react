@@ -1,0 +1,7 @@
+{
+  "build": {
+    "builder": "npm",
+    "buildCommand": "npm install && npm run build",
+    "start": "serve -s build -l $PORT"
+  }
+}
